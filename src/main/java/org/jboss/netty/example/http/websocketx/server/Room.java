@@ -86,7 +86,7 @@ public class Room implements Serializable {
 	}
 	
 	public boolean hasEnoughPlayers() {
-		return players.size()>2;
+		return players.size() > 1;
 	}
 	
 	public boolean isAdult() {
@@ -109,7 +109,6 @@ public class Room implements Serializable {
 		}
 		players.put(userId, player);
 		playerCount = players.size();
-		
 	}
 	
 	public void setAdult(boolean isAdult) {
@@ -129,12 +128,7 @@ public class Room implements Serializable {
 	}
 
 	public void startRound() {
-		// TODO Auto-generated method stub
 		state = State.WRITING_ACRONYMS;
-		
-		for(Player player : players.values()) {
-			player.getContext().getChannel().write(new TextWebSocketFrame());
-		}
 	}
 	
 	private Round getRound() {

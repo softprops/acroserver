@@ -1,16 +1,16 @@
 package org.jboss.netty.example.http.websocketx.server;
 
-import java.util.List;
+import java.util.Collection;
 
 public class StartRound {
 	
 	private int round;
 	
-	private List<Player> players;
+	private Collection<Player> players;
 	
 	private String acronym;
 	
-	public StartRound(int round, List<Player> players, String acronym) {
+	public StartRound(int round, Collection<Player> players, String acronym) {
 		this.round = round;
 		this.players = players;
 		this.acronym = acronym;
@@ -24,11 +24,11 @@ public class StartRound {
 		this.round = round;
 	}
 
-	public List<Player> getPlayers() {
+	public Collection<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<Player> players) {
+	public void setPlayers(Collection<Player> players) {
 		this.players = players;
 	}
 
