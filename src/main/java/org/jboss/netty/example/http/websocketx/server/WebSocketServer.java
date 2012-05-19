@@ -48,12 +48,7 @@ public class WebSocketServer {
 		bootstrap.setPipelineFactory(new WebSocketServerPipelineFactory());
 
 		// Bind and start to accept incoming connections.
-		try {
-			bootstrap.bind(new InetSocketAddress(InetAddress.getLocalHost(), port));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		bootstrap.bind(new InetSocketAddress("0.0.0.0", port));
 
 		System.out.println("Web socket server started at port " + port + '.');
 		System.out
