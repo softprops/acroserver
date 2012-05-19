@@ -58,7 +58,7 @@ import org.jboss.netty.util.CharsetUtil;
    
        private WebSocketServerHandshaker handshaker;
        
-       private acro.Handler acroHandler = new acro.Handler();
+       private static acro.Handler acroHandler = new acro.Handler();
        
        
    

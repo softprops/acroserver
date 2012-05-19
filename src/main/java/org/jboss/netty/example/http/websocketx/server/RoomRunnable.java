@@ -13,9 +13,9 @@ public class RoomRunnable implements Runnable {
 
 	Gson gson;
 
-	AcroHandler handler;
+	acro.Handler handler;
 
-	public RoomRunnable(Room room, AcroHandler handler) {
+	public RoomRunnable(Room room, acro.Handler handler) {
 		super();
 		this.handler = handler;
 	}
