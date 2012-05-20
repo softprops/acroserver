@@ -23,7 +23,7 @@ object Timer {
 case class Disconnected(userId: String)
 
 class RoomActor(name: String) extends scala.actors.Actor { self =>
-  def answerTime = 20
+  def answerTime = 40
   def voteTime = 20
 
   val room = new Room()
