@@ -40,7 +40,7 @@ class RoomActor extends scala.actors.Actor {
       if (room.getState == Room.State.CHATTING && room.hasEnoughPlayers) {
         startRound()
       }
-    case Answer(con) =>
+    case Answer(con) if room.getState == Room.State.WRITING_ACRONYMS =>
       rounds.head.addAnswer(con.request.getUserId,
                             new Acronym(con.request.getUserId,
                                         con.request.optString("acronym")))
@@ -69,6 +69,7 @@ class RoomActor extends scala.actors.Actor {
       val answers = Handler.gsonHeavy.toJson(
         new Response("as", rounds.head.getAnswers))
       broadcast(answers)
+      room.startVoting()
     }
   }
 }

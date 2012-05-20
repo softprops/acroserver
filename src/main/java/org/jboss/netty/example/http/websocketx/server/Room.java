@@ -133,6 +133,10 @@ public class Room implements Serializable {
 	public void startRound() {
 		state = State.WRITING_ACRONYMS;
 	}
+
+	public void startVoting() {
+		state = State.VOTING;
+	}
 	
 	private Round getRound() {
 		if(currentRound==null) {
