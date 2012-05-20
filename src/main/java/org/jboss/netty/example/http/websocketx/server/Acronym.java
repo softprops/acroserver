@@ -35,6 +35,10 @@ public class Acronym {
 		return this;
 	}
 
+	public int getVoteCount() {
+		return voteCount;
+	}
+
 	Set<String> votes = new HashSet<String>();
 
 	public long getReceived() {
