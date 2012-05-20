@@ -76,9 +76,8 @@ class RoomActor extends scala.actors.Actor { self =>
   def startRound() {
     room.startRound()
     val size = (rounds.size % 2) + 3
-    val chars = "ABCDEFGHIJKLMNOPQRSTUVWY".toSeq
-    val acro = (for (_ <- (1 to size))
-      yield chars(rand.nextInt(chars.size))).mkString
+    val chars = "ABCDEFGHIJKLMNOPQRSTVW".toSeq
+    val acro = rand.shuffle(chars).take(size).mkString
     rounds = new Round :: rounds
     rounds.head.setCategory("general")
     rounds.head.setAcronym(acro)
