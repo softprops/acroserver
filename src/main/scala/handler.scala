@@ -9,6 +9,13 @@ import scala.collection.JavaConverters._
 
 import org.jboss.netty.example.http.websocketx.server._
 
+trait Action
+case class RoomList(con: Context) extends Action
+case class AutoJoin(con: Context) extends Action
+case class Join(con: Context) extends Action
+case class Message(con: Context) extends Action
+case class Answer(con: Context) extends Action
+
 case class Context(channelContext: ChannelHandlerContext,
                    request: Request) {
   def write(str: String) {
@@ -18,7 +25,8 @@ case class Context(channelContext: ChannelHandlerContext,
     "rl" -> RoomList,
     "jr" -> Join,
     "m"  -> Message,
-    "aj" -> AutoJoin
+    "aj" -> AutoJoin,
+    "aa" -> Answer
   )
   def getAction = actions(request.getType)(this)
 }

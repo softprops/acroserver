@@ -7,13 +7,6 @@ import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame
 import org.jboss.netty.example.http.websocketx.server._
 
-case class RoomList(con: Context) extends Action
-case class AutoJoin(con: Context) extends Action
-case class Join(con: Context) extends Action
-case class Message(con: Context) extends Action
-
-trait Action
-
 import Handler._
 
 class Game extends Actor {
@@ -50,7 +43,10 @@ class Game extends Actor {
             new Response("m", con.request.getMessage()))))
       }
       println(room.players.size)
+    case ans @ Answer(con) =>
+      room(con) ! ans
   }}
+  def room(con: Context) = rooms(con.request.getRoom)
   def newRoom() = {
     val roomActor = new RoomActor
     rooms = rooms + (roomActor.room.getId() -> roomActor)

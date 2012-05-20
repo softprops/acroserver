@@ -77,4 +77,7 @@ public class Round {
 		this.acronyms = acronyms;
 	}
 
+	public void addAnswer(String userId, Acronym ans) {
+		acronyms.put(userId, ans);
+	}
 }

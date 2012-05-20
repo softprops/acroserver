@@ -18,8 +18,9 @@ public class Acronym {
 	@Expose
 	int voteCount;
 	
-	public Acronym() {
-		votes.add(new Player(null));
+	public Acronym(String userId, String text) {
+		this.userId = userId;
+		this.text = text;
 	}
 	
 	public Acronym voteFor(Player player) {

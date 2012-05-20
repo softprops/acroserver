@@ -40,6 +40,10 @@ class RoomActor extends scala.actors.Actor {
       if (room.getState == Room.State.CHATTING && room.hasEnoughPlayers) {
         startRound()
       }
+    case Answer(con) =>
+      rounds.head.addAnswer(con.request.getUserId,
+                            new Acronym(con.request.getUserId,
+                                        con.request.optString("acronym")))
   } }
 
   def broadcast(str: String) {
@@ -61,5 +65,8 @@ class RoomActor extends scala.actors.Actor {
     val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
     println("sending: " + text)
     broadcast(text)
+    Timer.seconds(61) {
+      
+    }
   }
 }
