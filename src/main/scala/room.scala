@@ -32,7 +32,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
   room.setId(UUID.randomUUID().toString())
 
   def players = room.getPlayers.asScala
-  def getPlayer(userId: String) = Option(room.getPlayer(userId))
+
   def cleanup: Unit = {
     for (player <- players)
       if (!player.getContext.getChannel.isConnected)
@@ -56,6 +56,9 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       rounds.head.addAnswer(con.request.getUserId,
                             new Acronym(room.getPlayer(con.request.getUserId),
                                         con.request.optString("acronym")))
+      val voteCount = Handler.gsonHeavy.toJson(
+        new Response("ac", rounds.head.getAcronyms.size))
+      broadcast(voteCount)
     case Vote(con) =>
       rounds.head.addVote(con.request.getUserId,
                           con.request.optString("acronym"))
