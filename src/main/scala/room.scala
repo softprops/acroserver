@@ -65,7 +65,7 @@ class RoomActor extends scala.actors.Actor {
     rounds.head.setRound(rounds.size)
     val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
     broadcast(text)
-    Timer.seconds(61) {
+    Timer.seconds(65) {
       if (rounds.head.getAnswers.isEmpty) {
         startRound()
       } else {
