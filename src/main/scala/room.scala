@@ -4,12 +4,21 @@ import java.util.UUID
 
 import scala.collection.JavaConverters._
 import java.util.concurrent.TimeUnit
+import org.jboss.netty.util.{TimerTask,Timeout}
 import org.jboss.netty.example.http.websocketx.server._
 
 import Handler._
 
 object Timer {
   val underlying = new org.jboss.netty.util.HashedWheelTimer
+  def apply[U](delay: Long, unit: TimeUnit)(f: => U) {
+    underlying.newTimeout(new TimerTask {
+      def run(timeout: Timeout) {
+        f
+      }
+    }, delay, unit)
+  }
+  def seconds[U](delay: Long) = Timer(delay, TimeUnit.SECONDS)_
 }
 
 class RoomActor extends scala.actors.Actor {
@@ -49,6 +58,8 @@ class RoomActor extends scala.actors.Actor {
     rounds.head.setCategory("general")
     rounds.head.setAcronym(acro)
     val sr = new StartRound(rounds.size, room.getPlayers, acro)
-    broadcast(Handler.gsonHeavy.toJson(sr))
+    val text = Handler.gsonHeavy.toJson(new Response("sr", sr))
+    println("sending:  start round" + sr)
+    broadcast(text)
   }
 }
