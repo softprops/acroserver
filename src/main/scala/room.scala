@@ -78,7 +78,9 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
   }
   val rand = new scala.util.Random
   def startRound() {
-    if (room.hasEnoughPlayers) {
+    if (!room.hasEnoughPlayers) {
+      room.startChatting()
+    } else {
       room.startRound()
       val size = (rounds.size % 2) + 3
       val chars = "ABCDEFGHIJKLMNOPQRSTVW".toSeq

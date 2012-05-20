@@ -147,6 +147,10 @@ public class Room implements Serializable {
 		state = State.VOTING;
 	}
 	
+	public void startChatting() {
+		state = State.CHATTING;
+	}
+	
 	private Round getRound() {
 		if(currentRound==null) {
 			Round r = new Round();
