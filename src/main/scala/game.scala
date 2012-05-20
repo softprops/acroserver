@@ -43,9 +43,9 @@ class Game extends Actor {
             new Response("m", con.request.getMessage()))))
       }
     case ans: RoomAction =>
-      room(ans.con) ! ans
+      for (rm <- room(ans.con)) rm ! ans
   }}
-  def room(con: Context) = rooms(con.request.getRoom)
+  def room(con: Context) = rooms.get(con.request.getRoom)
   def newRoom(name: String) = {
     val roomActor = new RoomActor(name)
     rooms = rooms + (roomActor.room.getId() -> roomActor)
