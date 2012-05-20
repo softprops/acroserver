@@ -13,29 +13,29 @@ public class Acronym {
 	String text;
 
 	@Expose
-	String userId;
+	Player player;
 	
 	@Expose
 	int voteCount;
 	
-	public Acronym(String userId, String text) {
-		this.userId = userId;
+	public Acronym(Player player, String text) {
+		this.player = player;
 		this.text = text;
 	}
 	
-	public Acronym voteFor(Player player) {
-		votes.add(player);
-		voteCount = votes.size();		
+	public Acronym addVote(String voterId) {
+		votes.add(voterId);
+		voteCount = votes.size();
 		return this;
 	}
 	
-	public Acronym devoteFor(Player player) {
-		votes.remove(player);
+	public Acronym removeVote(String voterId) {
+		votes.remove(voterId);
 		voteCount = votes.size();
 		return this;
 	}
 
-	Set<Player> votes = new HashSet<Player>();
+	Set<String> votes = new HashSet<String>();
 
 	public long getReceived() {
 		return received;
@@ -45,8 +45,8 @@ public class Acronym {
 		return text;
 	}
 
-	public String getUserId() {
-		return userId;
+	public Player getPlayer() {
+		return player;
 	}
 
 	public void setReceived(long received) {
@@ -57,8 +57,8 @@ public class Acronym {
 		this.text = text;
 	}
 	
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 	
 }

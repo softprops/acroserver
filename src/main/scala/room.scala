@@ -24,6 +24,7 @@ case class Disconnected(userId: String)
 
 class RoomActor extends scala.actors.Actor { self =>
   def answerTime = 20
+  def voteTime = 20
 
   val room = new Room()
   room.setName("Ryan's Room")
@@ -52,8 +53,12 @@ class RoomActor extends scala.actors.Actor { self =>
       }
     case Answer(con) if room.getState == Room.State.WRITING_ACRONYMS =>
       rounds.head.addAnswer(con.request.getUserId,
-                            new Acronym(con.request.getUserId,
+                            new Acronym(room.getPlayer(con.request.getUserId),
                                         con.request.optString("acronym")))
+    case Vote(con) =>
+      rounds.head.addVote(con.request.getUserId,
+                          con.request.optString("acronym"))
+
     case Disconnected(userId) =>
       println("removing " + userId)
       room.removePlayer(userId)
@@ -86,7 +91,13 @@ class RoomActor extends scala.actors.Actor { self =>
           new Response("as", rounds.head.getAnswers))
         broadcast(answers)
         room.startVoting()
+        Timer.seconds(voteTime + 1) {
+          val answers = Handler.gsonHeavy.toJson(
+            new Response("vc", rounds.head.getAnswers))
+          broadcast(answers)
+        }
       }
     }
   }
 }
+

@@ -81,6 +81,13 @@ public class Round {
 		acronyms.put(userId, ans);
 	}
 
+	public void addVote(String voterId, String answerUserId) {
+		for (Acronym acronym : acronyms.values())
+			acronym.removeVote(voterId);
+		if (acronyms.containsKey(answerUserId))
+			acronyms.get(answerUserId).addVote(voterId);
+	}
+
 	public java.util.Collection<Acronym> getAnswers() {
 		return acronyms.values();
 	}

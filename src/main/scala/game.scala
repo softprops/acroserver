@@ -42,9 +42,8 @@ class Game extends Actor {
           new TextWebSocketFrame(gsonHeavy.toJson(
             new Response("m", con.request.getMessage()))))
       }
-      println(room.players.size)
-    case ans @ Answer(con) =>
-      room(con) ! ans
+    case ans: RoomAction =>
+      room(ans.con) ! ans
   }}
   def room(con: Context) = rooms(con.request.getRoom)
   def newRoom() = {

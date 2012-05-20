@@ -69,7 +69,7 @@ public class Room implements Serializable {
 		if(!rounds.isEmpty()) {
 			Round round = rounds.get(rounds.size()-1);
 			Acronym acro = round.getWinner();
-			String winnerUserId = acro.getUserId();
+			String winnerUserId = acro.getPlayer().getUserId();
 			player = players.get(winnerUserId);
 		} else {
 			Iterator<Player> playersIterator = players.values().iterator();
@@ -118,6 +118,10 @@ public class Room implements Serializable {
 		players.remove(userId);
 		playerCount = players.size();
 	}
+
+    public Player getPlayer(String userId) {
+        return players.get(userId);
+    }
 
 	public void setAdult(boolean isAdult) {
 		this.isAdult = isAdult;
