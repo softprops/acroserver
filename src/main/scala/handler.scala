@@ -24,7 +24,11 @@ case class Leave(con: Context) extends RoomAction
 case class Context(channelContext: ChannelHandlerContext,
                    request: Request) {
   def write(str: String) {
-    Handler.write(channelContext, str)
+    try {
+      Handler.write(channelContext, str)
+    } catch {
+      case e => e.printStackTrace
+    }
   }
   val actions = Map[String, (Context => Action)](
     "rl" -> RoomList,
