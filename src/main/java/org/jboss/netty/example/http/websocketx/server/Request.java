@@ -27,6 +27,10 @@ public class Request extends JSONObject {
 		return optString("username");
 	}
 	
+	public String getAvatarUrl() {
+		return optString("avatar_url");
+	}
+	
 	public String getRoom() {
 		return optString("room");
 	}

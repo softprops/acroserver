@@ -7,17 +7,16 @@ public class Player extends JSONObject {
 	
 	private ChannelHandlerContext ctx;
 	
-	public Player(ChannelHandlerContext ctx, String userId, String username) {
+	public Player(ChannelHandlerContext ctx) {
 		super();
 		this.ctx = ctx;
-		this.userId = userId;
-		this.username = username;
 	}
 	String userId;
 	String username;
 	int currentRoundVoteCount;
 	int totalVoteCount;
 	long lastResponseReceived;
+	String avatarUrl;
 	
 	public ChannelHandlerContext getContext() {
 		return ctx;
@@ -34,6 +33,12 @@ public class Player extends JSONObject {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 	public int getCurrentRoundVoteCount() {
 		return currentRoundVoteCount;

@@ -51,4 +51,4 @@ class RoomActor extends scala.actors.Actor {
     val sr = new StartRound(rounds.size, room.getPlayers, acro)
     broadcast(Handler.gsonHeavy.toJson(sr))
   }
-  }
+}

@@ -94,7 +94,7 @@ public class Room implements Serializable {
 	}
 	
 	public boolean isFull() {
-		return players.size()==14;
+		return players.size() > 13;
 	}
 	
 	public void join(ChannelHandlerContext ctx, Request request) {
@@ -105,7 +105,10 @@ public class Room implements Serializable {
 		}
 		player = players.get(userId);
 		if(player==null) {
-			player = new Player(ctx, userId, request.getUsername());
+			player = new Player(ctx);
+			player.setUserId(userId);
+			player.setUsername(request.getUsername());
+			player.setAvatarUrl(request.getAvatarUrl());
 		}
 		players.put(userId, player);
 		playerCount = players.size();

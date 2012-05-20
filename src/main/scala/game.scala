@@ -47,7 +47,7 @@ class Game extends Actor {
           new TextWebSocketFrame(gsonHeavy.toJson(
             new Response("m", con.request.getMessage()))))
       }
-    case _ => println("no match")
+      println(room.players.size)
   }}
   def newRoom() = {
     val roomActor = new RoomActor

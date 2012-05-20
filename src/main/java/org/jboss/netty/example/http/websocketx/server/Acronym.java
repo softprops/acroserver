@@ -19,7 +19,7 @@ public class Acronym {
 	int voteCount;
 	
 	public Acronym() {
-		votes.add(new Player(null,"",""));
+		votes.add(new Player(null));
 	}
 	
 	public Acronym voteFor(Player player) {
