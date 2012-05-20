@@ -17,7 +17,7 @@ class Game extends Actor {
     case RoomList(con) =>
       println("RoomList("+con.request+")")
       if (rooms.isEmpty) {
-        for (_ <- 1 to 3) newRoom()
+        Seq("The Lounge", "Cloud Nine", "Sin City").foreach(newRoom)
       }
       con.write(gsonLight.toJson(new Response("rl", roomsData)))
     case Join(con) =>
@@ -28,7 +28,7 @@ class Game extends Actor {
       val available = rooms.values.filter { !_.room.isFull }
       val room =
         if (available.isEmpty)
-          newRoom()
+          newRoom("Auto Room")
         else
           available.minBy { _.room.getRoomSize }
       room ! Join(con)
@@ -46,8 +46,8 @@ class Game extends Actor {
       room(ans.con) ! ans
   }}
   def room(con: Context) = rooms(con.request.getRoom)
-  def newRoom() = {
-    val roomActor = new RoomActor
+  def newRoom(name: String) = {
+    val roomActor = new RoomActor(name)
     rooms = rooms + (roomActor.room.getId() -> roomActor)
     roomActor.start()
     roomActor

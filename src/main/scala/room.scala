@@ -22,16 +22,17 @@ object Timer {
 }
 case class Disconnected(userId: String)
 
-class RoomActor extends scala.actors.Actor { self =>
+class RoomActor(name: String) extends scala.actors.Actor { self =>
   def answerTime = 20
   def voteTime = 20
 
   val room = new Room()
-  room.setName("Ryan's Room")
+  room.setName(name)
   room.setAdult(false)
   room.setId(UUID.randomUUID().toString())
 
   def players = room.getPlayers.asScala
+  def getPlayer(userId: String) = Option(room.getPlayer(userId))
   def cleanup: Unit = {
     for (player <- players)
       if (!player.getContext.getChannel.isConnected)
