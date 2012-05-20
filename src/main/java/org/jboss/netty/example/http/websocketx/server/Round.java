@@ -80,4 +80,8 @@ public class Round {
 	public void addAnswer(String userId, Acronym ans) {
 		acronyms.put(userId, ans);
 	}
+
+	public java.util.Collection<Acronym> getAnswers() {
+		return acronyms.values();
+	}
 }

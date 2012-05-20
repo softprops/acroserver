@@ -47,6 +47,7 @@ class RoomActor extends scala.actors.Actor {
   } }
 
   def broadcast(str: String) {
+    println("broadcasting: " + str)
     for (player <- room.getPlayers.asScala) {
       Handler.write(player.getContext, str)
     }
@@ -63,10 +64,11 @@ class RoomActor extends scala.actors.Actor {
     rounds.head.setAcronym(acro)
     rounds.head.setRound(rounds.size)
     val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
-    println("sending: " + text)
     broadcast(text)
     Timer.seconds(61) {
-      
+      val answers = Handler.gsonHeavy.toJson(
+        new Response("as", rounds.head.getAnswers))
+      broadcast(answers)
     }
   }
 }
