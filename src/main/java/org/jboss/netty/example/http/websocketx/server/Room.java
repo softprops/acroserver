@@ -151,32 +151,4 @@ public class Room implements Serializable {
 		state = State.CHATTING;
 	}
 	
-	private Round getRound() {
-		if(currentRound==null) {
-			Round r = new Round();
-			int size = rounds.size()+3;
-			int acroSize;
-			if(size%7==0) {
-				acroSize = 7;
-			} else if(size%6==0) {
-				acroSize = 6;
-			} else if(size%5==0) {
-				acroSize = 5;
-			} else if(size%4==0) {
-				acroSize = 4;
-			} else {
-				acroSize = 3;
-			}
-			
-			StringBuilder b = new StringBuilder(acroSize);
-			for(int i = 0; i < acroSize; i++) {
-				b.append("A");
-			}
-			r.setAcronym(b.toString());
-			r.setCategory("baseball");
-			currentRound = r;
-		}
-		return currentRound;
-	}
-	
 }

@@ -56,9 +56,9 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       rounds.head.addAnswer(con.request.getUserId,
                             new Acronym(room.getPlayer(con.request.getUserId),
                                         con.request.optString("acronym")))
-      val voteCount = Handler.gsonHeavy.toJson(
+      val answerCount = Handler.gsonHeavy.toJson(
         new Response("ac", rounds.head.getAcronyms.size))
-      broadcast(voteCount)
+      broadcast(answerCount)
     case Vote(con) =>
       rounds.head.addVote(con.request.getUserId,
                           con.request.optString("acronym"))
