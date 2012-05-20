@@ -48,7 +48,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       if (!room.isFull()) {
         room.join(con.channelContext, con.request)
       }
-      con.write(gsonHeavy.toJson(new Response("jr", room)))
+      broadcast(gsonHeavy.toJson(new Response("jr", room)))
       if (room.getState == Room.State.CHATTING) {
         startRound()
       }
