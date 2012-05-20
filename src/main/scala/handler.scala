@@ -14,12 +14,13 @@ case class Context(channelContext: ChannelHandlerContext,
   def write(str: String) {
     Handler.write(channelContext, str)
   }
-  def getAction = request.getType match {
-    case "rl" => RoomList(this)
-    case "jr" => Join(this)
-    case "m" => Message(this)
-    case "aj" => AutoJoin(this)
-  }
+  val actions = Map[String, (Context => Action)](
+    "rl" -> RoomList,
+    "jr" -> Join,
+    "m"  -> Message,
+    "aj" -> AutoJoin
+  )
+  def getAction = actions(request.getType)(this)
 }
 
 class Handler {

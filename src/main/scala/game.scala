@@ -7,10 +7,12 @@ import org.jboss.netty.channel.ChannelHandlerContext
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame
 import org.jboss.netty.example.http.websocketx.server._
 
-case class RoomList(con: Context)
-case class AutoJoin(con: Context)
-case class Join(con: Context)
-case class Message(con: Context)
+case class RoomList(con: Context) extends Action
+case class AutoJoin(con: Context) extends Action
+case class Join(con: Context) extends Action
+case class Message(con: Context) extends Action
+
+trait Action
 
 import Handler._
 
