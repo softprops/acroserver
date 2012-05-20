@@ -86,7 +86,7 @@ public class Room implements Serializable {
 	}
 	
 	public boolean hasEnoughPlayers() {
-		return players.size() > 1;
+		return players.size() >0;
 	}
 	
 	public boolean isAdult() {

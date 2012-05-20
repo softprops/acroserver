@@ -57,9 +57,9 @@ class RoomActor extends scala.actors.Actor {
     rounds = new Round :: rounds
     rounds.head.setCategory("general")
     rounds.head.setAcronym(acro)
-    val sr = new StartRound(rounds.size, room.getPlayers, acro)
-    val text = Handler.gsonHeavy.toJson(new Response("sr", sr))
-    println("sending:  start round" + sr)
+    rounds.head.setRound(rounds.size)
+    val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
+    println("sending: " + text)
     broadcast(text)
   }
 }

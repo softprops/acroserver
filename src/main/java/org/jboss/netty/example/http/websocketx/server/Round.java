@@ -17,6 +17,8 @@ public class Round {
 	@Expose
 	private String acronym;
 
+	@Expose private int round;
+
 	private Map<String, Acronym> acronyms = new HashMap<String, Acronym>();
 
 	private static Comparator<Acronym> comparator = new Comparator<Acronym>() {
@@ -58,6 +60,13 @@ public class Round {
 
 	public void setAcronym(String acronym) {
 		this.acronym = acronym;
+	}
+
+	public int getRound() {
+		return round;
+	}
+	public void setRound(int round) {
+		this.round = round;
 	}
 
 	public Map<String, Acronym> getAcronyms() {
