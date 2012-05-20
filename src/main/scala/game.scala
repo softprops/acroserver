@@ -22,7 +22,7 @@ class Game extends Actor {
     case RoomList(con) =>
       println("RoomList("+con.request+")")
       if (rooms.isEmpty) {
-        newRoom()
+        for (_ <- 1 to 3) newRoom()
       }
       con.write(gsonLight.toJson(new Response("rl", roomsData)))
     case Join(con) =>

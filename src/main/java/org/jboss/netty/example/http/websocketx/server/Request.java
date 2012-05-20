@@ -11,6 +11,10 @@ public class Request extends JSONObject {
 		super(str);
 	}
 	
+	public String getType() {
+		return optString("type");
+	}
+
 	public boolean isAutoJoin() {
 		return "aj".equals(optString("type"));
 	}

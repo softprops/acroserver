@@ -14,34 +14,19 @@ case class Context(channelContext: ChannelHandlerContext,
   def write(str: String) {
     Handler.write(channelContext, str)
   }
+  def getAction = request.getType match {
+    case "rl" => RoomList(this)
+    case "jr" => Join(this)
+    case "m" => Message(this)
+    case "aj" => AutoJoin(this)
+  }
 }
 
 class Handler {
   import Handler._
   def handleRequest(ctx: ChannelHandlerContext, msg: String) {
-    val request = new Request(msg)
-    val con = Context(ctx, request)
-    try {
-      if(request.isMessage()) {
-        game ! Message(con)
-      } else {
-        if (request.isAutoJoin()) {
-          game ! AutoJoin(con)
-        } else if (request.isRoomListRequest()) {
-          game ! RoomList(con)
-        } else if (request.isJoinRoomRequest()) {
-          game ! Join(con)
-        }
-      }
-    } catch {
-      case e =>
-        e.printStackTrace()
-        val response = new Response("er", null);
-        response.setStatus("error");
-        con.write(gsonLight.toJson(response))
-    }
+    game ! Context(ctx, new Request(msg)).getAction
   }
-
   val game = new Game
   game.start()
 
