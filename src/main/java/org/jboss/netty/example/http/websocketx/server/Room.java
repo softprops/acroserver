@@ -59,7 +59,7 @@ public class Room implements Serializable {
 	public Collection<Player> getPlayers() {
 		return players.values();
 	};
-	
+
 	public int getRoomSize() {
 		return players.size();
 	}
@@ -86,7 +86,7 @@ public class Room implements Serializable {
 	}
 	
 	public boolean hasEnoughPlayers() {
-		return players.size() >0;
+		return players.size() > 1;
 	}
 	
 	public boolean isAdult() {
@@ -113,7 +113,12 @@ public class Room implements Serializable {
 		players.put(userId, player);
 		playerCount = players.size();
 	}
-	
+
+	public void removePlayer(String userId) {
+		players.remove(userId);
+		playerCount = players.size();
+	}
+
 	public void setAdult(boolean isAdult) {
 		this.isAdult = isAdult;
 	}

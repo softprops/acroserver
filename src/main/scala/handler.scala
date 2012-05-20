@@ -34,6 +34,7 @@ case class Context(channelContext: ChannelHandlerContext,
 class Handler {
   import Handler._
   def handleRequest(ctx: ChannelHandlerContext, msg: String) {
+    println(msg)
     game ! Context(ctx, new Request(msg)).getAction
   }
   val game = new Game
@@ -42,7 +43,10 @@ class Handler {
 }
 object Handler {
   def write(channelContext: ChannelHandlerContext, str: String) {
-    channelContext.getChannel().write(new TextWebSocketFrame(str))
+    val chan = channelContext.getChannel
+    if (chan.isConnected) {
+      chan.write(new TextWebSocketFrame(str))
+    }
   }
   val gsonLight =
     new GsonBuilder().setFieldNamingPolicy(

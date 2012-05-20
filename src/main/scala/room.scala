@@ -20,14 +20,24 @@ object Timer {
   }
   def seconds[U](delay: Long) = Timer(delay, TimeUnit.SECONDS)_
 }
+case class Disconnected(userId: String)
 
-class RoomActor extends scala.actors.Actor {
+class RoomActor extends scala.actors.Actor { self =>
+  def answerTime = 20
+
   val room = new Room()
   room.setName("Ryan's Room")
   room.setAdult(false)
   room.setId(UUID.randomUUID().toString())
 
   def players = room.getPlayers.asScala
+  def cleanup: Unit = {
+    for (player <- players)
+      if (!player.getContext.getChannel.isConnected)
+        self ! Disconnected(player.getUserId)
+    Timer.seconds(1)(cleanup)
+  }
+  Timer.seconds(5)(cleanup)
 
   var rounds = List.empty[Round]
 
@@ -44,6 +54,9 @@ class RoomActor extends scala.actors.Actor {
       rounds.head.addAnswer(con.request.getUserId,
                             new Acronym(con.request.getUserId,
                                         con.request.optString("acronym")))
+    case Disconnected(userId) =>
+      println("removing " + userId)
+      room.removePlayer(userId)
   } }
 
   def broadcast(str: String) {
@@ -65,7 +78,7 @@ class RoomActor extends scala.actors.Actor {
     rounds.head.setRound(rounds.size)
     val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
     broadcast(text)
-    Timer.seconds(65) {
+    Timer.seconds(answerTime + 5) {
       if (rounds.head.getAnswers.isEmpty) {
         startRound()
       } else {
