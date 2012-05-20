@@ -58,6 +58,8 @@ class RoomActor extends scala.actors.Actor { self =>
     case Vote(con) =>
       rounds.head.addVote(con.request.getUserId,
                           con.request.optString("acronym"))
+    case Leave(con) =>
+      room.removePlayer(con.request.getUserId)
 
     case Disconnected(userId) =>
       println("removing " + userId)
@@ -73,7 +75,7 @@ class RoomActor extends scala.actors.Actor { self =>
   val rand = new scala.util.Random
   def startRound() {
     room.startRound()
-    val size = (rounds.size % 4) + 3
+    val size = (rounds.size % 2) + 3
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWY".toSeq
     val acro = (for (_ <- (1 to size))
       yield chars(rand.nextInt(chars.size))).mkString
