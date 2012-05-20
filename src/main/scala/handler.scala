@@ -16,7 +16,7 @@ trait RoomAction extends Action
 case class RoomList(con: Context) extends Action
 case class AutoJoin(con: Context) extends Action
 case class Join(con: Context) extends Action
-case class Message(con: Context) extends Action
+case class Message(con: Context) extends RoomAction
 case class Answer(con: Context) extends RoomAction
 case class Vote(con: Context) extends RoomAction
 case class Leave(con: Context) extends RoomAction

@@ -13,6 +13,8 @@ class Game extends Actor {
   private var rooms = Map.empty[String, RoomActor]
   def roomsData = rooms.values.map { _.room }.asJava
 
+  val mainScreen = new org.jboss.netty.channel.group.DefaultChannelGroup 
+
   def act = loop { react {
     case RoomList(con) =>
       println("RoomList("+con.request+")")
@@ -20,9 +22,14 @@ class Game extends Actor {
         Seq("The Lounge", "Cloud Nine", "Sin City").foreach(newRoom)
       }
       con.write(gsonLight.toJson(new Response("rl", roomsData)))
+      mainScreen.add(con.channelContext.getChannel)
     case Join(con) =>
       println("Join("+con.request+")")
       rooms(con.request.getRoom()) ! Join(con)
+      mainScreen.remove(con.channelContext.getChannel)
+      mainScreen.write(new TextWebSocketFrame(
+        gsonLight.toJson(new Response("rl", roomsData))
+      ))
     case AutoJoin(con) =>
       println("AutoJoin("+con.request+")")
       val available = rooms.values.filter { !_.room.isFull }
@@ -32,16 +39,6 @@ class Game extends Actor {
         else
           available.minBy { _.room.getRoomSize }
       room ! Join(con)
-    case Message(con) =>
-      println("Message("+con.request+")")
-      val room = rooms(con.request.getRoom())
-      con.request.remove("type")
-      con.request.remove("room")
-      for(player <- room.players) {
-        player.getContext.getChannel.write(
-          new TextWebSocketFrame(gsonHeavy.toJson(
-            new Response("m", con.request.getMessage()))))
-      }
     case ans: RoomAction =>
       for (rm <- room(ans.con)) rm ! ans
   }}

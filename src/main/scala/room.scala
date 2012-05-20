@@ -52,6 +52,11 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       if (room.getState == Room.State.CHATTING) {
         startRound()
       }
+    case Message(con) =>
+      con.request.remove("type")
+      con.request.remove("room")
+      broadcast(gsonHeavy.toJson(
+        new Response("m", con.request.getMessage())))
     case Answer(con) if room.getState == Room.State.WRITING_ACRONYMS =>
       rounds.head.addAnswer(con.request.getUserId,
                             new Acronym(room.getPlayer(con.request.getUserId),
