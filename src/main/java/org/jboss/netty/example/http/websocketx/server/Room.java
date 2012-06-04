@@ -64,27 +64,6 @@ public class Room implements Serializable {
 		return players.size();
 	}
 	
-	public Player getWinnerOfLastRound() {
-		Player player = null;
-		if(!rounds.isEmpty()) {
-			Round round = rounds.get(rounds.size()-1);
-			Acronym acro = round.getWinner();
-			String winnerUserId = acro.getPlayer().getUserId();
-			player = players.get(winnerUserId);
-		} else {
-			Iterator<Player> playersIterator = players.values().iterator();
-			Player max = playersIterator.next();
-				
-			for(Player playa : players.values()) {
-				if(playa.lastResponseReceived>max.lastResponseReceived) {
-					max = playa;
-				}
-			}
-			player = max;
-		}
-		return player;
-	}
-	
 	public boolean hasEnoughPlayers() {
 		return players.size() > 2;
 	}

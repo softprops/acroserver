@@ -49,6 +49,8 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
         room.join(con.channelContext, con.request)
       }
       con.write(gsonHeavy.toJson(new Response("jr", room)))
+      val joinedRoom = Handler.gsonHeavy.toJson(new Response("nu",room.getPlayer(con.request.getUserId)))
+	  broadcast(joinedRoom)
       if (room.getState == Room.State.CHATTING) {
         startRound()
       }
@@ -69,10 +71,13 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
                           con.request.optString("acronym"))
     case Leave(con) =>
       room.removePlayer(con.request.getUserId)
-
+	  val left = Handler.gsonHeavy.toJson(new Response("lv", con.request.getUserId))
+      broadcast(left)
     case Disconnected(userId) =>
       println("removing " + userId)
       room.removePlayer(userId)
+	  val left = Handler.gsonHeavy.toJson(new Response("lv", userId))
+      broadcast(left)
   } }
 
   def broadcast(str: String) {
@@ -87,7 +92,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       room.startChatting()
     } else {
       room.startRound()
-      val size = (rounds.size % 2) + 3
+      val size = (rounds.size % 4) + 3
       val chars = "ABCDEFGHIJKLMNOPQRSTVW".toSeq
       val acro = rand.shuffle(chars).take(size).mkString
       rounds = new Round :: rounds
@@ -97,17 +102,27 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
       val text = Handler.gsonHeavy.toJson(new Response("sr", rounds.head))
       broadcast(text)
       Timer.seconds(answerTime + 5) {
-        if (rounds.head.getAnswers.isEmpty) {
+        if (rounds.head.getAnswers.getAnswers.isEmpty) {
           startRound()
         } else {
-          val answers = Handler.gsonHeavy.toJson(
+          val answers = Handler.gsonLight.toJson(
             new Response("as", rounds.head.getAnswers))
           broadcast(answers)
           room.startVoting()
           Timer.seconds(voteTime + 1) {
-            val answers = Handler.gsonHeavy.toJson(
-              new Response("vc", rounds.head.getAnswers))
-            broadcast(answers)
+			val kanswers = rounds.head.getAnswers;
+            val answers = Handler.gsonLight.toJson(
+              new Response("vc", kanswers))
+			val winner = room.getPlayer(kanswers.getWinner)
+			if(winner!=null) {
+				println("winner bonus " + winner.getUsername)
+				winner.setTotalVoteCount(winner.getTotalVoteCount + rounds.head.getAcronym.length)
+			}
+			val speedBonus = room.getPlayer(kanswers.getSpeeder)
+			if(speedBonus!=null) {
+				println("speed bonus " + speedBonus.getUsername)
+				speedBonus.setTotalVoteCount(speedBonus.getTotalVoteCount + 2)
+			}
             for {
               player <- players
               answer <- Option(rounds.head.getAnswer(player.getUserId))
@@ -115,6 +130,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
               player.setTotalVoteCount(
                 player.getTotalVoteCount + answer.getVoteCount
               )
+              broadcast(answers)
             }
             Timer.seconds(10) {
               startRound()

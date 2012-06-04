@@ -7,7 +7,8 @@ import com.google.gson.annotations.Expose;
 
 public class Acronym {
 
-	long received;
+	@Expose
+	long received = System.currentTimeMillis();
 
 	@Expose
 	String text;

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 import com.google.gson.annotations.Expose;
 
@@ -28,11 +29,43 @@ public class Round {
 					arg1.votes.size());
 		}
 	};
-
-	public Acronym getWinner() {
+	
+	private List<Acronym> getAcroz() {
 		List<Acronym> acros = new ArrayList<Acronym>(acronyms.size());
 		acros.addAll(acronyms.values());
+		Map<String,Integer> voted = new HashMap<String,Integer>();
+		for(Acronym acro : acros) {
+			for(String voter:acro.votes) {
+				Integer count = voted.get(voter);
+				if(count==null) {
+					System.out.println("found " + voter);
+					count = 1;
+				} else {
+					System.out.println("cheater " + voter);
+					count++;
+				}
+				voted.put(voter,count);
+			}
+		}
+		Iterator<Acronym> i = acros.iterator();
+		while(i.hasNext()) {
+			Acronym acro = i.next();
+			Integer count = voted.get(acro.getPlayer().getUserId());
+			System.out.println("coutn is " + count);
+			if(count==null || count==0) {
+				i.remove();
+			}
+			
+		}
 		Collections.sort(acros, comparator);
+		return acros;
+	}
+
+	public Acronym getWinner() {
+		List<Acronym> acros = getAcroz();
+		if(acros.isEmpty()) {
+			return null;
+		}
 		Acronym prev = acros.get(0);
 		for (int i = 1; i < acros.size(); i++) {
 			Acronym acro = acros.get(i);
@@ -45,6 +78,26 @@ public class Round {
 		return prev;
 	}
 
+	public Acronym getSpeeder() {
+		List<Acronym> acros = getAcroz();
+		if(acros.isEmpty()) {
+			return null;
+		}
+		Acronym fastest = null;
+		for(Acronym acro : acros) {
+			if(acro.votes.isEmpty()) {
+				continue;
+			}
+			if(fastest!=null) {
+				if(fastest.received<=acro.received) {
+					fastest = acro;
+				}
+			} else {
+				fastest = acro;
+			}
+		}
+		return fastest;
+	}
 	public String getCategory() {
 		return category;
 	}
@@ -92,7 +145,7 @@ public class Round {
 			acronyms.get(answerUserId).addVote(voterId);
 	}
 
-	public java.util.Collection<Acronym> getAnswers() {
-		return acronyms.values();
+	public Answers getAnswers() {
+		return new Answers(acronyms.values(),getWinner(),getSpeeder());
 	}
 }
