@@ -87,15 +87,32 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
     }
   }
   val rand = new scala.util.Random
+
+  def startFaceOffRound() {
+	  val leaders = room.getLeaders.asScala
+  }
   def startRound() {
+  val leaders = room.getLeaders.asScala
+  if(leaders.head!=null) {
+	if(leaders.head.getTotalVoteCount>=30) {
+		startFaceOffRound();
+	}
+  } else
     if (!room.hasEnoughPlayers) {
       room.startChatting()
     } else {
+
       room.startRound()
       val size = (rounds.size % 4) + 3
       val chars = "ABCDEFGHIJKLMNOPQRSTVW".toSeq
       val acro = rand.shuffle(chars).take(size).mkString
       rounds = new Round :: rounds
+		println("\n\new:")
+	  for {
+	 leader <- room.getLeaders.asScala
+	} {
+		println(leader.getUsername + " " + leader.getTotalVoteCount)
+	}
       rounds.head.setCategory("general")
       rounds.head.setAcronym(acro)
       rounds.head.setRound(rounds.size)
@@ -117,11 +134,15 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
 			if(winner!=null) {
 				println("winner bonus " + winner.getUsername)
 				winner.setTotalVoteCount(winner.getTotalVoteCount + rounds.head.getAcronym.length)
+			} else {
+				println("no winners")
 			}
 			val speedBonus = room.getPlayer(kanswers.getSpeeder)
 			if(speedBonus!=null) {
 				println("speed bonus " + speedBonus.getUsername)
 				speedBonus.setTotalVoteCount(speedBonus.getTotalVoteCount + 2)
+			} else {
+				println("no speed bonus")
 			}
             for {
               player <- players

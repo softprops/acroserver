@@ -1,12 +1,13 @@
 package org.jboss.netty.example.http.websocketx.server;
 
 import java.util.Collection;
+import java.util.List;
 import com.google.gson.annotations.Expose;
 
 public class Answers {
 	
 	public Answers() {}
-	public Answers(Collection<Acronym> answers, Acronym winner, Acronym speeder) {
+	public Answers(Collection<Acronym> answers, Acronym winner, Acronym speeder, List<String> winnerBonuses) {
 		this.answers = answers;
 		if(winner!=null) {
 			this.winner = winner.getPlayer().getUserId();
@@ -14,6 +15,7 @@ public class Answers {
 		if(speeder!=null) {
 			this.speeder = speeder.getPlayer().getUserId();
 		}
+		this.winnerBonuses = winnerBonuses;
 	}
 	
 	@Expose
@@ -25,6 +27,9 @@ public class Answers {
 	@Expose
 	private String speeder;
 	
+	@Expose
+	List<String> winnerBonuses;
+	
 	public String getSpeeder() {
 		return speeder;
 	}
@@ -35,6 +40,10 @@ public class Answers {
 	
 	public Collection<Acronym> getAnswers() {
 		return answers;
+	}
+	
+	public List<String> getWinnerBonuses() {
+		return winnerBonuses;
 	}
 	
 }

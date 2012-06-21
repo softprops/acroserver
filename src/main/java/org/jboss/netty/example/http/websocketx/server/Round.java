@@ -30,8 +30,15 @@ public class Round {
 		}
 	};
 	
+	private List<Acronym> __acroz;
+	
 	private List<Acronym> getAcroz() {
+		// if(__acroz!=null) {
+		// 	return __acroz;
+		// }
+		System.out.println("getAcroz");
 		List<Acronym> acros = new ArrayList<Acronym>(acronyms.size());
+		System.out.println("acro size" + acros.size());
 		acros.addAll(acronyms.values());
 		Map<String,Integer> voted = new HashMap<String,Integer>();
 		for(Acronym acro : acros) {
@@ -58,7 +65,8 @@ public class Round {
 			
 		}
 		Collections.sort(acros, comparator);
-		return acros;
+		__acroz = acros;
+		return __acroz;
 	}
 
 	public Acronym getWinner() {
@@ -78,6 +86,23 @@ public class Round {
 		return prev;
 	}
 
+	public List<String> getWinnerBonuses() {
+		List<Acronym> acros = getAcroz();
+		if(acros.isEmpty()) {
+			return Collections.emptyList();
+		}
+		Acronym winner = getWinner();
+		List<String> winnars = new ArrayList<String>();
+		if(winner!=null) {
+			for(Acronym acro : acros) {
+				if(winner.votes.contains(acro.getPlayer().getUserId())) {
+					winnars.add(acro.getPlayer().getUserId());
+				}
+			}		
+		}
+		return winnars;
+	}
+
 	public Acronym getSpeeder() {
 		List<Acronym> acros = getAcroz();
 		if(acros.isEmpty()) {
@@ -86,6 +111,9 @@ public class Round {
 		Acronym fastest = null;
 		for(Acronym acro : acros) {
 			if(acro.votes.isEmpty()) {
+				continue;
+			}
+			if(acro.getPlayer().getTotalVoteCount()>26) {
 				continue;
 			}
 			if(fastest!=null) {
@@ -146,6 +174,6 @@ public class Round {
 	}
 
 	public Answers getAnswers() {
-		return new Answers(acronyms.values(),getWinner(),getSpeeder());
+		return new Answers(acronyms.values(),getWinner(),getSpeeder(),getWinnerBonuses());
 	}
 }

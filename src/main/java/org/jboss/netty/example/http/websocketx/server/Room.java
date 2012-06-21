@@ -3,6 +3,8 @@ package org.jboss.netty.example.http.websocketx.server;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +43,7 @@ public class Room implements Serializable {
 	}
 	
 	public enum State {
-		CHATTING,VOTING,WRITING_ACRONYMS
+		CHATTING,VOTING,WRITING_ACRONYMS,FACE_OFF
 	}
 
 	public String getId() {
@@ -59,6 +61,34 @@ public class Room implements Serializable {
 	public Collection<Player> getPlayers() {
 		return players.values();
 	};
+	
+	public List<Player> getLeaders() {
+		List<Player> leaders = new ArrayList<Player>(players.values());
+		Collections.sort(leaders, new Comparator<Player>() {
+		
+			public int compare(Player a, Player b) {
+				int c = Integer.valueOf(a.getTotalVoteCount()).compareTo(b.getTotalVoteCount());
+				if(c!=0) {
+					return c;
+				}
+				if(rounds.isEmpty()) {
+					return c;
+				}
+				Round r = rounds.get(rounds.size()-1);
+				Acronym aa = r.getAnswer(a.getUserId());
+				Acronym bb = r.getAnswer(b.getUserId());
+				if(aa==null) {
+					return 1;
+				}
+				if(bb==null) {
+					return -1;
+				}
+				return Long.valueOf(aa.getReceived()).compareTo(bb.getReceived());
+			}
+			
+		});
+		return leaders;
+	}
 
 	public int getRoomSize() {
 		return players.size();
@@ -128,6 +158,10 @@ public class Room implements Serializable {
 	
 	public void startChatting() {
 		state = State.CHATTING;
+	}
+	
+	public void startFaceOff() {
+		state = State.FACE_OFF;
 	}
 	
 }
