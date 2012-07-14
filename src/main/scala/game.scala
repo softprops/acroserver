@@ -9,7 +9,12 @@ import org.jboss.netty.example.http.websocketx.server._
 
 import Handler._
 
+object Game {
+  def DefaultRooms = Seq("The Lounge", "Cloud Nine", "Sin City")
+}
+
 class Game extends Actor {
+  import Game._
   private var rooms = Map.empty[String, RoomActor]
   def roomsData = rooms.values.map { _.room }.asJava
 
@@ -18,9 +23,7 @@ class Game extends Actor {
   def act = loop { react {
     case RoomList(con) =>
       println("RoomList("+con.request+")")
-      if (rooms.isEmpty) {
-        Seq("The Lounge", "Cloud Nine", "Sin City").foreach(newRoom)
-      }
+      if (rooms.isEmpty) DefaultRooms.foreach(newRoom)
       con.write(gsonLight.toJson(new Response("rl", roomsData)))
       mainScreen.add(con.channelContext.getChannel)
     case Join(con) =>
