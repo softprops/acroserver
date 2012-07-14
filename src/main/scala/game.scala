@@ -25,11 +25,11 @@ class Game extends Actor {
       println("RoomList("+con.request+")")
       if (rooms.isEmpty) DefaultRooms.foreach(newRoom)
       con.write(gsonLight.toJson(new Response("rl", roomsData)))
-      mainScreen.add(con.channelContext.getChannel)
+      mainScreen.add(con.channel)
     case Join(con) =>
       println("Join("+con.request+")")
       rooms(con.request.getRoom()) ! Join(con)
-      mainScreen.remove(con.channelContext.getChannel)
+      mainScreen.remove(con.channel)
       mainScreen.write(new TextWebSocketFrame(
         gsonLight.toJson(new Response("rl", roomsData))
       ))

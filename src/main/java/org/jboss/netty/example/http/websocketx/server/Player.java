@@ -1,16 +1,16 @@
 package org.jboss.netty.example.http.websocketx.server;
 
-import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.Channel;
 import org.json.JSONObject;
 import com.google.gson.annotations.Expose;
 
 public class Player extends JSONObject {
 	
-	private ChannelHandlerContext ctx;
+	private Channel channel;
 	
-	public Player(ChannelHandlerContext ctx) {
+	public Player(Channel chan) {
 		super();
-		this.ctx = ctx;
+		this.channel = chan;
 	}
 	
 	@Expose
@@ -24,8 +24,8 @@ public class Player extends JSONObject {
 	
 	String avatarUrl;
 	
-	public ChannelHandlerContext getContext() {
-		return ctx;
+	public Channel getChannel() {
+		return channel;
 	}
 	
 	public String getUserId() {
@@ -52,6 +52,4 @@ public class Player extends JSONObject {
 	public void setTotalVoteCount(int totalVoteCount) {
 		this.totalVoteCount = totalVoteCount;
 	}
-	
-	
 }

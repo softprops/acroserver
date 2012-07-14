@@ -1,13 +1,13 @@
 package acro
 
-import org.jboss.netty.channel.ChannelHandlerContext
+import org.jboss.netty.channel.Channel
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame
 import com.google.gson.{ExclusionStrategy,FieldAttributes,FieldNamingPolicy,
                         Gson,GsonBuilder}
 
 import scala.collection.JavaConverters._
 
-import org.jboss.netty.example.http.websocketx.server._
+import org.jboss.netty.example.http.websocketx.server.Request
 
 trait Action {
   def con: Context
@@ -21,11 +21,11 @@ case class Answer(con: Context) extends RoomAction
 case class Vote(con: Context) extends RoomAction
 case class Leave(con: Context) extends RoomAction
 
-case class Context(channelContext: ChannelHandlerContext,
+case class Context(channel: Channel,
                    request: Request) {
   def write(str: String) {
     try {
-      Handler.write(channelContext, str)
+      Handler.write(channel, str)
     } catch {
       case e => e.printStackTrace
     }
@@ -44,7 +44,7 @@ case class Context(channelContext: ChannelHandlerContext,
 
 class Handler {
   import Handler._
-  def handleRequest(ctx: ChannelHandlerContext, msg: String) {
+  def handleRequest(ctx: Channel, msg: String) {
     println(msg)
     game ! Context(ctx, new Request(msg)).getAction
   }
@@ -53,8 +53,7 @@ class Handler {
 
 }
 object Handler {
-  def write(channelContext: ChannelHandlerContext, str: String) {
-    val chan = channelContext.getChannel
+  def write(chan: Channel, str: String) {
     if (chan.isConnected) {
       chan.write(new TextWebSocketFrame(str))
     }
@@ -69,10 +68,10 @@ object Handler {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .setExclusionStrategies(new ExclusionStrategy() {
         override def shouldSkipClass(arg: Class[_]) =
-          classOf[ChannelHandlerContext].isAssignableFrom(arg)
+          classOf[Channel].isAssignableFrom(arg)
 
         override def shouldSkipField(arg0: FieldAttributes) =
-          classOf[ChannelHandlerContext].isAssignableFrom(
+          classOf[Channel].isAssignableFrom(
             arg0.getDeclaredClass)
       }).create
 }

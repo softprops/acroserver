@@ -63,7 +63,7 @@ public class RoomRunnable implements Runnable {
 
 	private void sendMessageToAll(Object obj) {
 		for (Player player : room.getPlayers()) {
-			player.getContext().getChannel()
+			player.getChannel()
 					.write(new TextWebSocketFrame(gson.toJson(obj)));
 		}
 	}

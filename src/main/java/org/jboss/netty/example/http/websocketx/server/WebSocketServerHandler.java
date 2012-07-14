@@ -177,7 +177,7 @@ import org.jboss.netty.util.CharsetUtil;
               logger.debug(String.format("Channel %s received %s", ctx.getChannel().getId(), request));
           }
           try {
-        	  acroHandler.handleRequest(ctx,request);
+            acroHandler.handleRequest(ctx.getChannel() ,request);
           } catch (Exception e) {
         	  throw new RuntimeException(e);
           }

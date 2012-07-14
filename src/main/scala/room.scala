@@ -35,7 +35,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
 
   def cleanup: Unit = {
     for (player <- players)
-      if (!player.getContext.getChannel.isConnected)
+      if (!player.getChannel.isConnected)
         self ! Disconnected(player.getUserId)
     Timer.seconds(1)(cleanup)
   }
@@ -46,7 +46,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
   def act = loop { react {
     case Join(con) =>
       if (!room.isFull()) {
-        room.join(con.channelContext, con.request)
+        room.join(con.channel, con.request)
       }
       con.write(gsonHeavy.toJson(new Response("jr", room)))
       val joinedRoom = Handler.gsonHeavy.toJson(new Response("nu",room.getPlayer(con.request.getUserId)))
@@ -83,7 +83,7 @@ class RoomActor(name: String) extends scala.actors.Actor { self =>
   def broadcast(str: String) {
     println("broadcasting: " + str)
     for (player <- room.getPlayers.asScala) {
-      Handler.write(player.getContext, str)
+      Handler.write(player.getChannel, str)
     }
   }
   val rand = new scala.util.Random

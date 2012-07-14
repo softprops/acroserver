@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import com.google.gson.annotations.Expose;
@@ -106,7 +106,7 @@ public class Room implements Serializable {
 		return players.size() > 13;
 	}
 	
-	public void join(ChannelHandlerContext ctx, Request request) {
+	public void join(Channel channel, Request request) {
 		String userId = request.getUserId();
 		Player player = null;
 		if(userId==null) {
@@ -114,7 +114,7 @@ public class Room implements Serializable {
 		}
 		player = players.get(userId);
 		if(player==null) {
-			player = new Player(ctx);
+			player = new Player(channel);
 			player.setUserId(userId);
 			player.setUsername(request.getUsername());
 			player.setAvatarUrl(request.getAvatarUrl());
