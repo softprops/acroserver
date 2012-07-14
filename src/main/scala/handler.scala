@@ -2,12 +2,10 @@ package acro
 
 import org.jboss.netty.channel.Channel
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame
-import com.google.gson.{ExclusionStrategy,FieldAttributes,FieldNamingPolicy,
-                        Gson,GsonBuilder}
+import com.google.gson.{ ExclusionStrategy,FieldAttributes,FieldNamingPolicy,
+                        Gson,GsonBuilder }
 
 import scala.collection.JavaConverters._
-
-import org.jboss.netty.example.http.websocketx.server.Request
 
 trait Action {
   def con: Context
@@ -21,8 +19,18 @@ case class Answer(con: Context) extends RoomAction
 case class Vote(con: Context) extends RoomAction
 case class Leave(con: Context) extends RoomAction
 
+object Cmd {
+  val roomList = "rl"
+  val join = "jr"
+  val message = "m"
+  val autoJoin = "aj"
+  val answer = "aa"
+  val vote = "vt"
+  val leave = "lv"
+}
 case class Context(channel: Channel,
                    request: Request) {
+  import Cmd._
   def write(str: String) {
     try {
       Handler.write(channel, str)
@@ -31,13 +39,13 @@ case class Context(channel: Channel,
     }
   }
   val actions = Map[String, (Context => Action)](
-    "rl" -> RoomList,
-    "jr" -> Join,
-    "m"  -> Message,
-    "aj" -> AutoJoin,
-    "aa" -> Answer,
-    "vt" -> Vote,
-    "lv" -> Leave
+    roomList -> RoomList,
+    join -> Join,
+    message  -> Message,
+    autoJoin -> AutoJoin,
+    answer -> Answer,
+    vote -> Vote,
+    leave -> Leave
   )
   def getAction = actions(request.getType)(this)
 }
@@ -50,7 +58,6 @@ class Handler {
   }
   val game = new Game
   game.start()
-
 }
 object Handler {
   def write(chan: Channel, str: String) {
