@@ -1,4 +1,4 @@
-package org.jboss.netty.example.http.websocketx.server;
+package acro;
 
 import java.io.Serializable;
 import java.util.ArrayList;

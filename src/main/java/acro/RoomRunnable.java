@@ -1,6 +1,6 @@
-package org.jboss.netty.example.http.websocketx.server;
+package acro;
 
-import org.jboss.netty.example.http.websocketx.server.Room.State;
+import acro.Room.State;
 import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import com.google.gson.Gson;
@@ -13,7 +13,7 @@ public class RoomRunnable implements Runnable {
 
 	Gson gson;
 
-	acro.Handler handler;
+	Handler handler;
 
 	public RoomRunnable(Room room, acro.Handler handler) {
 		super();

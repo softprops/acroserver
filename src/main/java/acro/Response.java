@@ -1,4 +1,4 @@
-package org.jboss.netty.example.http.websocketx.server;
+package acro;
 
 import com.google.gson.annotations.Expose;
 

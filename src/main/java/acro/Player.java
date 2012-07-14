@@ -1,4 +1,4 @@
-package org.jboss.netty.example.http.websocketx.server;
+package acro;
 
 import org.jboss.netty.channel.Channel;
 import org.json.JSONObject;
