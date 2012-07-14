@@ -12,19 +12,39 @@ object AcroSpec extends Specification
   def uri = Seq(host.to_uri.toString.replace("http", "ws"), "websocket")
                 .mkString("")
 
+  def awaiting[T](action: => (()  => Unit) => Unit)(then: => T) = {
+    val l = new CountDownLatch(1)
+    action({ l.countDown })
+    l.await
+    then
+  }
+
   "acro" should {
-    "join users" in {     
-      val l = new CountDownLatch(1)
-      Sock.uri(uri) {
-        case Open(_) =>
-          println("connection open")
-        case TsMessage(s, t) =>
-          println("got srvr msg %s" format t)
-          l.countDown
-        case Close(_) =>
-          println("connection close")
+    "list rooms" in {
+      awaiting({ complete =>
+        Sock.uri(uri) {
+          case Open(s) =>
+            s.send("""{"type":"%s"}""" format Cmd.roomList)
+          case TsMessage(s, t) =>
+            println("got room list resp %s" format t)
+            complete
+        }
+      }){
+        // make assertion here
       }
-      l.await(200, TimeUnit.MILLISECONDS)
+    }
+    "join users" in {     
+      awaiting({ complete =>
+        Sock.uri(uri) {
+          case Open(s) =>
+            s.send("""{"type":"%s"}""" format Cmd.join)
+          case TsMessage(s, t) =>
+            println("got join resp %s" format t)
+            complete
+        }
+      }){
+        // make assertion here
+      }
     }
   }
 }
